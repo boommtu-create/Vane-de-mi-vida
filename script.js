@@ -1,43 +1,73 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const noBtn = document.getElementById("no");
   const yesBtn = document.getElementById("yes");
+  const noBtn = document.getElementById("no");
   const message = document.getElementById("message");
 
-  function moverBoton() {
-    const margin = 20;
+  let lluviaActiva = false;
 
+  /* ===== BOTÓN NO HUYE ===== */
+  function moverNo() {
+    const margin = 20;
     const btnWidth = noBtn.offsetWidth;
     const btnHeight = noBtn.offsetHeight;
 
     const maxX = window.innerWidth - btnWidth - margin;
     const maxY = window.innerHeight - btnHeight - margin;
 
-    let x, y;
-
-    do {
-      x = Math.random() * maxX;
-      y = Math.random() * maxY;
-    } while (
-      Math.abs(x - noBtn.offsetLeft) < 80 &&
-      Math.abs(y - noBtn.offsetTop) < 60
-    );
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
 
     noBtn.style.position = "fixed";
     noBtn.style.left = x + "px";
     noBtn.style.top = y + "px";
   }
 
-  // El botón NO huye en todas direcciones
-  noBtn.addEventListener("mouseenter", moverBoton);
-  noBtn.addEventListener("touchstart", moverBoton);
-  noBtn.addEventListener("mousedown", moverBoton);
+  noBtn.addEventListener("mouseenter", moverNo);
+  noBtn.addEventListener("mousedown", moverNo);
+  noBtn.addEventListener("touchstart", moverNo);
 
-  // El botón SÍ es fiel
+  /* ===== CREAR FLOR ===== */
+  function crearFlor() {
+    const flor = document.createElement("div");
+    flor.textContent = "🌸";
+    flor.style.position = "fixed";
+    flor.style.left = Math.random() * 100 + "vw";
+    flor.style.top = "-50px";
+    flor.style.fontSize = 30 + Math.random() * 40 + "px";
+    flor.style.opacity = Math.random();
+    flor.style.pointerEvents = "none";
+    flor.style.zIndex = 999;
+
+    document.body.appendChild(flor);
+
+    let posY = -50;
+    const velocidad = 1 + Math.random() * 2;
+
+    function caer() {
+      posY += velocidad;
+      flor.style.top = posY + "px";
+
+      if (posY < window.innerHeight + 50) {
+        requestAnimationFrame(caer);
+      }
+    }
+
+    caer();
+  }
+
+  /* ===== BOTÓN SÍ ===== */
   yesBtn.addEventListener("click", () => {
     message.textContent =
-      "Sabía que dirías que sí 😚💖 Te amo amorcito.";
+      "Love uuuuuu, busca en tu librero, hay una sorpresa jiji";
     message.classList.remove("hidden");
+
     yesBtn.style.display = "none";
     noBtn.style.display = "none";
+
+    // activar lluvia infinita
+    if (!lluviaActiva) {
+      lluviaActiva = true;
+      setInterval(crearFlor, 300);
+    }
   });
 });
